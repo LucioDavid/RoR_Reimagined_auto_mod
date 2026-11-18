@@ -10,6 +10,8 @@ from genieutils.unit import ResourceCost, TrainLocation
 from mods.helpers.ids_ror import (
     EFFECT_COMPOSITE_BOW,
     EFFECT_IMPROVED_BOW,
+    HOTKEY_GROUP_ARCHERY_RANGE,
+    STRING_HOTKEY_BOWMAN_UPGRADES,
     TECH_IMPROVED_BOW,
     TECH_COMPOSITE_BOW,
     TECH_IRON_AGE,
@@ -47,6 +49,8 @@ def modify_improved_bowman(data: DatFile):
             )
         ]
 
+        # TODO: change Improved Bowman stats
+
     logger.info("Changing Improved Bow tech button")
     improved_bow = data.techs[TECH_IMPROVED_BOW]
     improved_bow.research_locations = [
@@ -78,6 +82,8 @@ def modify_composite_bowman(data: DatFile):
             )
         ]
 
+        # TODO: change Composite Bowman stats
+
     logger.info("Changing Composite Bow tech button")
     composite_bow = data.techs[TECH_COMPOSITE_BOW]
     composite_bow.research_locations = [
@@ -99,8 +105,24 @@ def modify_composite_bowman(data: DatFile):
     )
 
 
-# def modify_bowman_line_upgrades_default_hotkey(hotkeys_file_path: Path):
-# logger.info("Changing Composite Bow and Improved Bow techs default hotkey")
+def modify_bowman_line_upgrades_default_hotkey(hotkeys: dict):
+    logger.info("Changing Composite Bow and Improved Bow techs default hotkey")
+    hotkey = next(
+        (
+            item
+            for item in hotkeys["hotkey_group_list"][HOTKEY_GROUP_ARCHERY_RANGE][
+                "hotkey_list"
+            ]
+            if item["name_string_id"] == STRING_HOTKEY_BOWMAN_UPGRADES
+        ),
+        None,
+    )
+    hotkey["defaults_list"] = [
+        {"name": "definitive", "key": "A"},
+        {"name": "left handed", "key": "H"},
+    ]
+
+    return hotkeys
 
 
 # def modify_bowman_line_tech_tree_view(tech_tree_file_path: Path)
@@ -109,11 +131,12 @@ def modify_composite_bowman(data: DatFile):
 # def modify_futuravailable_bowman_line_upgrades(futuravailableunits_file_path: Path)
 
 
-def mod(data: DatFile):
-    logger.info("Applying Bowman-line modifications:")
+def mod(data: DatFile, hotkeys: dict):
+    logger.info("🔧 Applying Bowman-line modifications:")
     modify_bowman(data, food=40, gold=20)
     modify_improved_bowman(data)
     modify_composite_bowman(data)
-    # modify_bowman_line_upgrades_default_hotkey(hotkeys_file_path)
+    hotkeys = modify_bowman_line_upgrades_default_hotkey(hotkeys)
     # modify_bowman_line_tech_tree_view(tech_tree_file_path)
     # modify_futuravailable_bowman_line_upgrades(futuravailableunits_file_path)
+    return hotkeys
