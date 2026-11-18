@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 def create_info_file():
     load_dotenv()
     mod_path = rf"{getenv("MODS_LOCAL_DIR")}\{getenv("MOD_NAME")}"
-    logger.info(rf"Creating info file {mod_path}\info.json")
+    logger.info("Creating info file info.json")
     data = {
         "Author": "Unpublished",
         "CacheStatus": 0,
