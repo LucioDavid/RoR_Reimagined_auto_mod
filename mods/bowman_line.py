@@ -2,18 +2,22 @@ import logging
 
 # from pathlib import Path
 
-from genieutils.tech import ResearchLocation
 from genieutils.datfile import DatFile
+from genieutils.effect import EffectCommand, Effect
+from genieutils.tech import ResearchLocation
 from genieutils.unit import ResourceCost, TrainLocation
 
 from mods.helpers.ids_ror import (
+    EFFECT_COMPOSITE_BOW,
+    EFFECT_IMPROVED_BOW,
+    TECH_IMPROVED_BOW,
+    TECH_COMPOSITE_BOW,
+    TECH_IRON_AGE,
+    TYPE_FOOD,
+    TYPE_GOLD,
     UNIT_BOWMAN,
     UNIT_IMPROVED_BOWMAN,
     UNIT_COMPOSITE_BOWMAN,
-    TECH_IMPROVED_BOW,
-    TECH_COMPOSITE_BOW,
-    TYPE_FOOD,
-    TYPE_GOLD,
 )
 
 logger = logging.getLogger(__name__)
@@ -54,6 +58,12 @@ def modify_improved_bowman(data: DatFile):
         )
     ]
 
+    logger.info("Making Improved Bow upgrade Bowman into Improved Bowman")
+    improved_bow_effect = data.effects[EFFECT_IMPROVED_BOW]
+    improved_bow_effect.effect_commands = [
+        EffectCommand(type=3, a=UNIT_BOWMAN, b=UNIT_IMPROVED_BOWMAN, c=-1, d=0.0)
+    ]
+
 
 def modify_composite_bowman(data: DatFile):
     logger.info("Changing Composite Bowman train button and hotkey of all civs")
@@ -78,6 +88,15 @@ def modify_composite_bowman(data: DatFile):
             hot_key_id=composite_bow.research_locations[0].hot_key_id,
         )
     ]
+
+    logger.info("Moving Composite Bow tech to Iron Age")
+    composite_bow.required_techs = (TECH_IMPROVED_BOW, TECH_IRON_AGE, -1, -1, -1, -1)
+
+    logger.info("Making Composite Bow upgrade Bowman into Composite Bowman")
+    composite_bow_effect = data.effects[EFFECT_COMPOSITE_BOW]
+    composite_bow_effect.effect_commands.append(
+        EffectCommand(type=3, a=UNIT_BOWMAN, b=UNIT_COMPOSITE_BOWMAN, c=-1, d=0.0)
+    )
 
 
 # def modify_bowman_line_upgrades_default_hotkey(hotkeys_file_path: Path):
