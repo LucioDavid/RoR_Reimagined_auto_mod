@@ -8,14 +8,13 @@ from pathlib import Path
 from dotenv import load_dotenv
 from os import getenv
 
-from mods.helpers.files import HOTKEYS_FILE_PATH, ROR_DAT_FOLDER_PATH, ROR_DAT_FILE_PATH
+from mods.helpers.files import CIV_TECH_TREES_FILE_PATH, HOTKEYS_FILE_PATH, ROR_DAT_FOLDER_PATH, ROR_DAT_FILE_PATH
 
 logger = logging.getLogger(__name__)
 
 
-def create_info_file():
+def create_info_file(mod_path: str):
     load_dotenv()
-    mod_path = rf"{getenv("MODS_LOCAL_DIR")}\{getenv("MOD_NAME")}"
     logger.info("Creating info file info.json")
     data = {
         "Author": "Unpublished",
@@ -29,40 +28,47 @@ def create_info_file():
         f.write(json_str)
 
 
-def ensure_mod_local_folder():
-    load_dotenv()
-    mod_path = rf"{getenv("MODS_LOCAL_DIR")}\{getenv("MOD_NAME")}"
+def ensure_mod_local_folder(mod_path: str):
     logger.info(rf"Ensure local mod folder {mod_path}")
     Path(mod_path).mkdir(exist_ok=True)
 
 
-def ensure_dat_folder():
-    load_dotenv()
-    dat_file_folder = (
-        rf"{getenv("MODS_LOCAL_DIR")}\{getenv("MOD_NAME")}\{ROR_DAT_FOLDER_PATH}"
-    )
-    logger.info(rf"Ensure dat folder {dat_file_folder}")
-    Path(dat_file_folder).mkdir(parents=True, exist_ok=True)
+def ensure_dat_folder(mod_path: str):
+    logger.info(rf"Ensure dat folder {mod_path}\{ROR_DAT_FOLDER_PATH}")
+    Path(rf"{mod_path}\{ROR_DAT_FOLDER_PATH}").mkdir(parents=True, exist_ok=True)
 
 
-def copy_dat_file():
+def ensure_civ_tech_trees_folder(mod_path: str):
+    logger.info(rf"Ensure CivTechTrees folder {mod_path}\{ROR_DAT_FOLDER_PATH}\CivTechTrees")
+    Path(rf"{mod_path}\{ROR_DAT_FOLDER_PATH}\CivTechTrees").mkdir(parents=False, exist_ok=True)
+
+
+def copy_dat_file(mod_path: str):
     logger.info("Copying dat file")
-    load_dotenv()
 
     shutil.copy2(
-        rf".\dist\{ROR_DAT_FILE_PATH}",
-        rf"{getenv("MODS_LOCAL_DIR")}\{getenv("MOD_NAME")}\{ROR_DAT_FILE_PATH}",
+        rf"dist\{ROR_DAT_FILE_PATH}",
+        rf"{mod_path}\{ROR_DAT_FILE_PATH}",
     )
 
 
-def copy_hotkeys_file():
+def copy_hotkeys_file(mod_path: str):
     logger.info("Copying hotkeys file")
-    load_dotenv()
 
     shutil.copy2(
-        rf".\dist\{HOTKEYS_FILE_PATH}",
-        rf"{getenv("MODS_LOCAL_DIR")}\{getenv("MOD_NAME")}\{HOTKEYS_FILE_PATH}",
+        rf"dist\{HOTKEYS_FILE_PATH}",
+        rf"{mod_path}\{HOTKEYS_FILE_PATH}",
     )
+
+
+def copy_civ_tech_trees_files(mod_path: str):
+    logger.info("Copying CivTechTrees files")
+
+    for _, civ_file_path in CIV_TECH_TREES_FILE_PATH.items():
+        shutil.copy2(
+            rf"dist\{ROR_DAT_FOLDER_PATH}\{civ_file_path}",
+            rf"{mod_path}\{ROR_DAT_FOLDER_PATH}\{civ_file_path}",
+        )
 
 
 def main():
@@ -79,12 +85,15 @@ def main():
     log_filename = args.logfile
     logging.basicConfig(filename=log_filename, level=logging.INFO)
 
-    ensure_mod_local_folder()
-    ensure_dat_folder()
+    mod_path = rf"{getenv("MODS_LOCAL_DIR")}\{getenv("MOD_NAME")}"
+    ensure_mod_local_folder(mod_path)
+    ensure_dat_folder(mod_path)
+    ensure_civ_tech_trees_folder(mod_path)
 
-    create_info_file()
-    copy_dat_file()
-    copy_hotkeys_file()
+    create_info_file(mod_path)
+    copy_dat_file(mod_path)
+    copy_hotkeys_file(mod_path)
+    copy_civ_tech_trees_files(mod_path)
 
     end = time.time()
     logger.info(f"Took {end - start:.2f} seconds")
