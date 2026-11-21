@@ -11,6 +11,7 @@ from genieutils.datfile import DatFile
 from mods.helpers.files import (
     AOE2_DAT_FILE_PATH,
     CIV_TECH_TREES_FILE_PATH,
+    FUTURAVAILABLEUNITS_FILE_PATH,
     HOTKEYS_FILE_PATH,
     ROR_DAT_FILE_PATH,
     ROR_DAT_FOLDER_PATH,
@@ -70,9 +71,10 @@ def main():
 
     ror_hotkeys = load_json_file(rf'{getenv("BASE_AOE2_DIR")}\{HOTKEYS_FILE_PATH}')
     ror_civ_tech_trees = load_json_files(CIV_TECH_TREES_FILE_PATH, rf'{getenv("BASE_AOE2_DIR")}\{ROR_DAT_FOLDER_PATH}')
+    ror_futuravailableunits = load_json_file(rf'{getenv("BASE_AOE2_DIR")}\{FUTURAVAILABLEUNITS_FILE_PATH}')
 
     logger.info("Applying mods")
-    bowman_line.mod(data=ror_data, hotkeys=ror_hotkeys, civ_tech_trees=ror_civ_tech_trees)
+    bowman_line.mod(ror_data, ror_hotkeys, ror_civ_tech_trees, ror_futuravailableunits)
 
     Path(rf"dist\{ROR_DAT_FOLDER_PATH}").mkdir(parents=True, exist_ok=True)
 
@@ -87,6 +89,7 @@ def main():
         data=ror_civ_tech_trees,
         indent_size=2,
     )
+    save_json_file(Path(rf"dist\{FUTURAVAILABLEUNITS_FILE_PATH}"), data=ror_futuravailableunits, indent_size=2)
 
     end = time.time()
     logger.info(f"Took {end - start:.2f} seconds")

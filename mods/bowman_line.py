@@ -9,6 +9,7 @@ from genieutils.unit import ResourceCost, TrainLocation
 
 from mods.helpers.ids_ror import (
     AGE_ID_IRON,
+    BUILDING_ARCHERY_RANGE,
     EFFECT_COMPOSITE_BOW,
     EFFECT_IMPROVED_BOW,
     HOTKEY_GROUP_ARCHERY_RANGE,
@@ -143,14 +144,40 @@ def modify_bowman_line_tech_tree_view(civ_tech_trees: dict):
         comp_bowman["Link Node Type"] = "UnitUpgrade"
 
 
-# def modify_futuravailable_bowman_line_upgrades(futuravailableunits_file_path: Path)
+def modify_futuravailable_bowman_line_upgrades(futuravailableunits: dict):
+    logger.info("Changing Bowman-line futuravailableunits of all civs")
+    for _, civ in futuravailableunits.items():
+        archery_range = next(
+            (item for item in civ["Buildings"] if item["ID"] == BUILDING_ARCHERY_RANGE),
+            None,
+        )
+        if archery_range is None:
+            continue
+
+        techs = archery_range.get("Techs")
+        if techs is not None:
+            comp_bow = next(
+                (item for item in techs if item["ID"] == TECH_COMPOSITE_BOW),
+                None,
+            )
+            if comp_bow is not None:
+                comp_bow["RequiredAge"] = AGE_ID_IRON
+
+        units = archery_range["Units"]
+        imp_bowman = next(
+            (item for item in units if item["ID"] == UNIT_IMPROVED_BOWMAN),
+            None,
+        )
+
+        if imp_bowman is not None:
+            units.remove(imp_bowman)
 
 
-def mod(data: DatFile, hotkeys: dict, civ_tech_trees: dict):
+def mod(data: DatFile, hotkeys: dict, civ_tech_trees: dict, futuravailableunits: dict):
     logger.info("🔧 Applying Bowman-line modifications:")
     modify_bowman(data, food=40, gold=20)
     modify_improved_bowman(data)
     modify_composite_bowman(data)
     modify_bowman_line_upgrades_default_hotkey(hotkeys)
     modify_bowman_line_tech_tree_view(civ_tech_trees)
-    # modify_futuravailable_bowman_line_upgrades(futuravailableunits_file_path)
+    modify_futuravailable_bowman_line_upgrades(futuravailableunits)

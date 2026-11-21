@@ -8,7 +8,13 @@ from pathlib import Path
 from dotenv import load_dotenv
 from os import getenv
 
-from mods.helpers.files import CIV_TECH_TREES_FILE_PATH, HOTKEYS_FILE_PATH, ROR_DAT_FOLDER_PATH, ROR_DAT_FILE_PATH
+from mods.helpers.files import (
+    CIV_TECH_TREES_FILE_PATH,
+    FUTURAVAILABLEUNITS_FILE_PATH,
+    HOTKEYS_FILE_PATH,
+    ROR_DAT_FOLDER_PATH,
+    ROR_DAT_FILE_PATH,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -71,6 +77,15 @@ def copy_civ_tech_trees_files(mod_path: str):
         )
 
 
+def copy_futuravailableunits_file(mod_path: str):
+    logger.info("Copying futuravailableunits file")
+
+    shutil.copy2(
+        rf"dist\{FUTURAVAILABLEUNITS_FILE_PATH}",
+        rf"{mod_path}\{FUTURAVAILABLEUNITS_FILE_PATH}",
+    )
+
+
 def main():
     start = time.time()
     parser = argparse.ArgumentParser(
@@ -94,6 +109,7 @@ def main():
     copy_dat_file(mod_path)
     copy_hotkeys_file(mod_path)
     copy_civ_tech_trees_files(mod_path)
+    copy_futuravailableunits_file(mod_path)
 
     end = time.time()
     logger.info(f"Took {end - start:.2f} seconds")
