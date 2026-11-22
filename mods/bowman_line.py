@@ -39,11 +39,11 @@ def modify_bowman(data: DatFile, ror_strings_en: dict, ror_modded_strings_en: di
         )
 
     logger.info("Changing Bowman language help to mention upgrade to Improved Bowman")
-    logger.info("[Old]: %s" % ror_strings_en[f"{language_dll_help_id(LANGUAGE_DLL_NAME_UNIT_BOWMAN)}"])
+    logger.debug("[old]: %s" % ror_strings_en[f"{language_dll_help_id(LANGUAGE_DLL_NAME_UNIT_BOWMAN)}"])
     ror_modded_strings_en[f"{language_dll_help_id(LANGUAGE_DLL_NAME_UNIT_BOWMAN)}"] = (
         r"Train <b>Bowman<b> (<cost>)\nRanged unit. Strong vs. units at long range. Weak vs. Slingers and units at close range.\n<GREY><i>Upgrades: armor (Storage Pit); range (Market), attack, accuracy (Government Center); to Improved Bowman (Range).<i><DEFAULT>\n<hp> <attack> <armor> <piercearmor> <range>"
     )
-    logger.info("[New]: %s" % ror_modded_strings_en[f"{language_dll_help_id(LANGUAGE_DLL_NAME_UNIT_BOWMAN)}"])
+    logger.debug("[new]: %s" % ror_modded_strings_en[f"{language_dll_help_id(LANGUAGE_DLL_NAME_UNIT_BOWMAN)}"])
 
 
 def modify_improved_bowman(data: DatFile, ror_strings_en: dict, ror_modded_strings_en: dict):
@@ -59,8 +59,12 @@ def modify_improved_bowman(data: DatFile, ror_strings_en: dict, ror_modded_strin
             )
         ]
 
+        logger.debug(f"[old][{civ.name}] - attacks[0]: {improved_bowman.type_50.attacks[0]}")
+        logger.debug(f"[old][{civ.name}] - displayed_attack: {improved_bowman.type_50.displayed_attack}")
         improved_bowman.type_50.attacks[0] = AttackOrArmor(class_=3, amount=5)
         improved_bowman.type_50.displayed_attack = 5
+        logger.debug(f"[new][{civ.name}] - attacks[0]: {improved_bowman.type_50.attacks[0]}")
+        logger.debug(f"[new][{civ.name}] - displayed_attack: {improved_bowman.type_50.displayed_attack}")
 
     logger.info("Changing Improved Bow tech button")
     improved_bow = data.techs[TECH_IMPROVED_BOW]
@@ -78,11 +82,11 @@ def modify_improved_bowman(data: DatFile, ror_strings_en: dict, ror_modded_strin
     improved_bow_effect.effect_commands = [EffectCommand(type=3, a=UNIT_BOWMAN, b=UNIT_IMPROVED_BOWMAN, c=-1, d=0.0)]
 
     logger.info("Changing Improved Bow language help accordingly")
-    logger.info("[Old]: %s" % ror_strings_en[f"{language_dll_help_id(LANGUAGE_DLL_NAME_TECH_IMPROVED_BOW)}"])
+    logger.debug("[old]: %s" % ror_strings_en[f"{language_dll_help_id(LANGUAGE_DLL_NAME_TECH_IMPROVED_BOW)}"])
     ror_modded_strings_en[f"{language_dll_help_id(LANGUAGE_DLL_NAME_TECH_IMPROVED_BOW)}"] = (
         r"Upgrade to <b>Improved Bow<b> (<cost>)\nUpgrades your Bowmen and lets you train Improved Bowmen, which are stronger."
     )
-    logger.info("[New]: %s" % ror_modded_strings_en[f"{language_dll_help_id(LANGUAGE_DLL_NAME_TECH_IMPROVED_BOW)}"])
+    logger.debug("[new]: %s" % ror_modded_strings_en[f"{language_dll_help_id(LANGUAGE_DLL_NAME_TECH_IMPROVED_BOW)}"])
 
 
 def modify_composite_bowman(data: DatFile):
@@ -98,8 +102,12 @@ def modify_composite_bowman(data: DatFile):
             )
         ]
 
+        logger.debug(f"[old][{civ.name}] - attacks[0]: {composite_bowman.type_50.attacks[0]}")
+        logger.debug(f"[old][{civ.name}] - displayed_attack: {composite_bowman.type_50.displayed_attack}")
         composite_bowman.type_50.attacks[0] = AttackOrArmor(class_=3, amount=7)
         composite_bowman.type_50.displayed_attack = 7
+        logger.debug(f"[new][{civ.name}] - attacks[0]: {composite_bowman.type_50.attacks[0]}")
+        logger.debug(f"[new][{civ.name}] - displayed_attack: {composite_bowman.type_50.displayed_attack}")
 
     logger.info("Changing Composite Bow tech button")
     composite_bow = data.techs[TECH_COMPOSITE_BOW]

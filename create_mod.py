@@ -85,12 +85,18 @@ def main():
         " Age of Empires II Definitive Edition: Return of Rome",
     )
     parser.add_argument("--logfile", type=Path, required=False)
+    parser.add_argument("--loglevel", choices=["info", "debug"], required=False, default="info")
     args = parser.parse_args()
+
+    log_level = {
+        "debug": logging.DEBUG,
+        "info": logging.INFO,
+    }
 
     load_dotenv()
 
     log_filename = args.logfile
-    logging.basicConfig(filename=log_filename, level=logging.INFO)
+    logging.basicConfig(filename=log_filename, level=log_level[args.loglevel])
 
     ror_data = load_dat_file(rf'{getenv("BASE_AOE2_DIR")}\{ROR_DAT_FILE_PATH}')
     # aoe2_data = load_dat_file(rf'{getenv("BASE_AOE2_DIR")}\{AOE2_DAT_FILE_PATH}')
