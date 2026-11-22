@@ -12,6 +12,7 @@ from mods.helpers.files import (
     CIV_TECH_TREES_FILE_PATH,
     FUTURAVAILABLEUNITS_FILE_PATH,
     HOTKEYS_FILE_PATH,
+    MODDED_STRINGS_FILE_PATH_EN,
     ROR_DAT_FOLDER_PATH,
     ROR_DAT_FILE_PATH,
 )
@@ -47,6 +48,11 @@ def ensure_dat_folder(mod_path: str):
 def ensure_civ_tech_trees_folder(mod_path: str):
     logger.info(rf"Ensure CivTechTrees folder {mod_path}\{ROR_DAT_FOLDER_PATH}\CivTechTrees")
     Path(rf"{mod_path}\{ROR_DAT_FOLDER_PATH}\CivTechTrees").mkdir(parents=False, exist_ok=True)
+
+
+def ensure_language_en_folder(mod_path: str):
+    logger.info(rf"Ensure language en folder {mod_path}\{Path(MODDED_STRINGS_FILE_PATH_EN).parent}")
+    Path(rf"{mod_path}\{MODDED_STRINGS_FILE_PATH_EN}").parent.mkdir(parents=True, exist_ok=True)
 
 
 def copy_dat_file(mod_path: str):
@@ -86,6 +92,15 @@ def copy_futuravailableunits_file(mod_path: str):
     )
 
 
+def copy_language_file_en(mod_path: str):
+    logger.info("Copying language file en")
+
+    shutil.copy2(
+        rf"dist\{MODDED_STRINGS_FILE_PATH_EN}",
+        rf"{mod_path}\{MODDED_STRINGS_FILE_PATH_EN}",
+    )
+
+
 def main():
     start = time.time()
     parser = argparse.ArgumentParser(
@@ -104,12 +119,14 @@ def main():
     ensure_mod_local_folder(mod_path)
     ensure_dat_folder(mod_path)
     ensure_civ_tech_trees_folder(mod_path)
+    ensure_language_en_folder(mod_path)
 
     create_info_file(mod_path)
     copy_dat_file(mod_path)
     copy_hotkeys_file(mod_path)
     copy_civ_tech_trees_files(mod_path)
     copy_futuravailableunits_file(mod_path)
+    copy_language_file_en(mod_path)
 
     end = time.time()
     logger.info(f"Took {end - start:.2f} seconds")

@@ -13,6 +13,8 @@ from mods.helpers.ids_ror import (
     EFFECT_COMPOSITE_BOW,
     EFFECT_IMPROVED_BOW,
     HOTKEY_GROUP_ARCHERY_RANGE,
+    LANGUAGE_DLL_NAME_TECH_IMPROVED_BOW,
+    LANGUAGE_DLL_NAME_UNIT_BOWMAN,
     STRING_HOTKEY_BOWMAN_UPGRADES,
     TECH_IMPROVED_BOW,
     TECH_COMPOSITE_BOW,
@@ -23,11 +25,12 @@ from mods.helpers.ids_ror import (
     UNIT_IMPROVED_BOWMAN,
     UNIT_COMPOSITE_BOWMAN,
 )
+from mods.helpers.lang_helper import language_dll_help_id
 
 logger = logging.getLogger(__name__)
 
 
-def modify_bowman(data: DatFile, food: int, gold: int):
+def modify_bowman(data: DatFile, ror_strings_en: dict, ror_modded_strings_en: dict, food: int, gold: int):
     logger.info("Changing Bowman cost of all civs")
     for civ in data.civs:
         bowman = civ.units[UNIT_BOWMAN]
@@ -37,8 +40,15 @@ def modify_bowman(data: DatFile, food: int, gold: int):
             bowman.creatable.resource_costs[2],
         )
 
+    logger.info("Changing Bowman language help to mention upgrade to Improved Bowman")
+    logger.info("[Current]: %s" % ror_strings_en[f"{language_dll_help_id(LANGUAGE_DLL_NAME_UNIT_BOWMAN)}"])
+    ror_modded_strings_en[f"{language_dll_help_id(LANGUAGE_DLL_NAME_UNIT_BOWMAN)}"] = (
+        r"Train <b>Bowman<b> (<cost>)\nRanged unit. Strong vs. units at long range. Weak vs. Slingers and units at close range.\n<GREY><i>Upgrades: armor (Storage Pit); range (Market), attack, accuracy (Government Center); to Improved Bowman (Range).<i><DEFAULT>\n<hp> <attack> <armor> <piercearmor> <range>"
+    )
+    logger.info("[New]: %s" % ror_modded_strings_en[f"{language_dll_help_id(LANGUAGE_DLL_NAME_UNIT_BOWMAN)}"])
 
-def modify_improved_bowman(data: DatFile):
+
+def modify_improved_bowman(data: DatFile, ror_strings_en: dict, ror_modded_strings_en: dict):
     logger.info("Changing Improved Bowman train button and hotkey of all civs")
     for civ in data.civs:
         improved_bowman = civ.units[UNIT_IMPROVED_BOWMAN]
@@ -67,6 +77,13 @@ def modify_improved_bowman(data: DatFile):
     logger.info("Making Improved Bow upgrade Bowman into Improved Bowman")
     improved_bow_effect = data.effects[EFFECT_IMPROVED_BOW]
     improved_bow_effect.effect_commands = [EffectCommand(type=3, a=UNIT_BOWMAN, b=UNIT_IMPROVED_BOWMAN, c=-1, d=0.0)]
+
+    logger.info("Changing Improved Bow language help accordingly")
+    logger.info("[Current]: %s" % ror_strings_en[f"{language_dll_help_id(LANGUAGE_DLL_NAME_TECH_IMPROVED_BOW)}"])
+    ror_modded_strings_en[f"{language_dll_help_id(LANGUAGE_DLL_NAME_TECH_IMPROVED_BOW)}"] = (
+        r"Upgrade to <b>Improved Bow<b> (<cost>)\nUpgrades your Bowmen and lets you train Improved Bowmen, which are stronger."
+    )
+    logger.info("[New]: %s" % ror_modded_strings_en[f"{language_dll_help_id(LANGUAGE_DLL_NAME_TECH_IMPROVED_BOW)}"])
 
 
 def modify_composite_bowman(data: DatFile):
@@ -173,10 +190,17 @@ def modify_futuravailable_bowman_line_upgrades(futuravailableunits: dict):
             units.remove(imp_bowman)
 
 
-def mod(data: DatFile, hotkeys: dict, civ_tech_trees: dict, futuravailableunits: dict):
+def mod(
+    data: DatFile,
+    hotkeys: dict,
+    civ_tech_trees: dict,
+    futuravailableunits: dict,
+    ror_strings_en: dict,
+    ror_modded_strings_en: dict,
+):
     logger.info("🔧 Applying Bowman-line modifications:")
-    modify_bowman(data, food=40, gold=20)
-    modify_improved_bowman(data)
+    modify_bowman(data, ror_strings_en, ror_modded_strings_en, food=40, gold=20)
+    modify_improved_bowman(data, ror_strings_en, ror_modded_strings_en)
     modify_composite_bowman(data)
     modify_bowman_line_upgrades_default_hotkey(hotkeys)
     modify_bowman_line_tech_tree_view(civ_tech_trees)

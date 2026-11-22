@@ -27,8 +27,8 @@ CIV_TECH_TREES_FILE_PATH = {
 
 FUTURAVAILABLEUNITS_FILE_PATH = r"modes\Pompeii\resources\_common\dat\futuravailableunits.json"
 
-MODDED_STRINGS_FILE_PATH_EN = (
-    r"modes\Pompeii\resources\en\strings\key-value\key-value-modded-strings-utf8.txt"
-)
+MODDED_STRINGS_FILE_PATH_EN = r"modes\Pompeii\resources\en\strings\key-value\key-value-modded-strings-utf8.txt"
+
+ROR_STRINGS_FILE_PATH_EN = r"modes\Pompeii\resources\en\strings\key-value\key-value-pompeii-strings-utf8.txt"
 
 UNIT_GRAPHICS_FOLDER_PATH = r"modes\Pompeii\resources\_common\drs\graphics"
