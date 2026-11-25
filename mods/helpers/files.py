@@ -29,6 +29,11 @@ FUTURAVAILABLEUNITS_FILE_PATH = r"modes\Pompeii\resources\_common\dat\futuravail
 
 MODDED_STRINGS_FILE_PATH_EN = r"modes\Pompeii\resources\en\strings\key-value\key-value-modded-strings-utf8.txt"
 
+AOE2_STRINGS_FILE_PATH_EN = r"resources\en\strings\key-value\key-value-strings-utf8.txt"
 ROR_STRINGS_FILE_PATH_EN = r"modes\Pompeii\resources\en\strings\key-value\key-value-pompeii-strings-utf8.txt"
 
-UNIT_GRAPHICS_FOLDER_PATH = r"modes\Pompeii\resources\_common\drs\graphics"
+AOE2_UNIT_GRAPHICS_FOLDER_PATH = r"resources\_common\drs\graphics"
+ROR_UNIT_GRAPHICS_FOLDER_PATH = r"modes\Pompeii\resources\_common\drs\graphics"
+
+AOE2_UI_FOLDER_PATH = r"widgetui"
+ROR_UI_FOLDER_PATH = r"modes\Pompeii\widgetui"

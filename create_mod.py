@@ -11,6 +11,8 @@ from genieutils.datfile import DatFile
 
 from mods.helpers.files import (
     AOE2_DAT_FILE_PATH,
+    AOE2_STRINGS_FILE_PATH_EN,
+    AOE2_UI_FOLDER_PATH,
     CIV_TECH_TREES_FILE_PATH,
     FUTURAVAILABLEUNITS_FILE_PATH,
     HOTKEYS_FILE_PATH,
@@ -18,8 +20,10 @@ from mods.helpers.files import (
     ROR_DAT_FILE_PATH,
     ROR_DAT_FOLDER_PATH,
     ROR_STRINGS_FILE_PATH_EN,
+    ROR_UI_FOLDER_PATH,
+    ROR_UNIT_GRAPHICS_FOLDER_PATH,
 )
-from mods import bowman_line
+from mods import bowman_line, spearman_line
 
 logger = logging.getLogger(__name__)
 
@@ -49,9 +53,12 @@ def load_en_key_value_strings(file_str_path: str) -> dict:
             line = line.strip()
             if not line or line.startswith("//"):
                 continue
-            parts = shlex.split(line)
+            lexer = shlex.shlex(line, posix=True)
+            lexer.whitespace_split = True
+            lexer.commenters = "//"
+            parts = list(lexer)[:2]
             if len(parts) != 2:
-                raise ValueError(f"Line {line_number} with unexpected format.")
+                raise ValueError(f"Line {line_number} with unexpected format.\n{parts}")
             key, value = parts
             ron_en_strings[key] = value
     return ron_en_strings
@@ -77,6 +84,11 @@ def save_language_file(file_path: Path, data: dict):
             f.write(f'{key} "{value}"\n')
 
 
+def ensure_dist_drs_graphics_folder():
+    logger.info(rf"Ensure language en folder {ROR_UNIT_GRAPHICS_FOLDER_PATH}")
+    Path(rf"dist\{ROR_UNIT_GRAPHICS_FOLDER_PATH}").mkdir(parents=True, exist_ok=True)
+
+
 def main():
     start = time.time()
     parser = argparse.ArgumentParser(
@@ -98,21 +110,43 @@ def main():
     log_filename = args.logfile
     logging.basicConfig(filename=log_filename, level=log_level[args.loglevel])
 
+    aoe2_data = load_dat_file(rf'{getenv("BASE_AOE2_DIR")}\{AOE2_DAT_FILE_PATH}')
     ror_data = load_dat_file(rf'{getenv("BASE_AOE2_DIR")}\{ROR_DAT_FILE_PATH}')
-    # aoe2_data = load_dat_file(rf'{getenv("BASE_AOE2_DIR")}\{AOE2_DAT_FILE_PATH}')
 
     ror_hotkeys = load_json_file(rf'{getenv("BASE_AOE2_DIR")}\{HOTKEYS_FILE_PATH}')
     ror_civ_tech_trees = load_json_files(CIV_TECH_TREES_FILE_PATH, rf'{getenv("BASE_AOE2_DIR")}\{ROR_DAT_FOLDER_PATH}')
     ror_futuravailableunits = load_json_file(rf'{getenv("BASE_AOE2_DIR")}\{FUTURAVAILABLEUNITS_FILE_PATH}')
+    aoe2_strings_en = load_en_key_value_strings(rf'{getenv("BASE_AOE2_DIR")}\{AOE2_STRINGS_FILE_PATH_EN}')
     ror_strings_en = load_en_key_value_strings(rf'{getenv("BASE_AOE2_DIR")}\{ROR_STRINGS_FILE_PATH_EN}')
     ror_modded_strings_en = {}
+    aoe2_icons = load_json_file(rf'{getenv("BASE_AOE2_DIR")}\{AOE2_UI_FOLDER_PATH}\icons.json')
+    ror_icons = load_json_file(rf'{getenv("BASE_AOE2_DIR")}\{ROR_UI_FOLDER_PATH}\icons.json')
+
+    Path(rf"dist\{ROR_DAT_FOLDER_PATH}").mkdir(parents=True, exist_ok=True)
+    ensure_dist_drs_graphics_folder()
 
     logger.info("Applying mods")
+    new_units = {}
+    new_techs = {}
+
     bowman_line.mod(
         ror_data, ror_hotkeys, ror_civ_tech_trees, ror_futuravailableunits, ror_strings_en, ror_modded_strings_en
     )
+    spearman_line.mod(
+        aoe2_data,
+        ror_data,
+        ror_hotkeys,
+        ror_civ_tech_trees,
+        ror_futuravailableunits,
+        aoe2_strings_en,
+        ror_modded_strings_en,
+        new_units,
+        new_techs,
+        aoe2_icons,
+        ror_icons,
+    )
 
-    Path(rf"dist\{ROR_DAT_FOLDER_PATH}").mkdir(parents=True, exist_ok=True)
+    # TODO: tech tree preview
 
     output_dat_file_path = rf"dist\{ROR_DAT_FILE_PATH}"
     logger.info(f"Saving dat file {output_dat_file_path}")
@@ -127,6 +161,7 @@ def main():
     )
     save_json_file(Path(rf"dist\{FUTURAVAILABLEUNITS_FILE_PATH}"), data=ror_futuravailableunits, indent_size=2)
     save_language_file(Path(rf"dist\{MODDED_STRINGS_FILE_PATH_EN}"), ror_modded_strings_en)
+    save_json_file(Path(rf"dist\{ROR_UI_FOLDER_PATH}\icons.json"), data=ror_icons, indent_size=2)
 
     end = time.time()
     logger.info(f"Took {end - start:.2f} seconds")

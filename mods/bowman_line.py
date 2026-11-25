@@ -19,6 +19,7 @@ from mods.helpers.ids_ror import (
     TECH_IRON_AGE,
     TYPE_FOOD,
     TYPE_GOLD,
+    TYPE_UPGRADE_UNIT,
     UNIT_BOWMAN,
     UNIT_IMPROVED_BOWMAN,
     UNIT_COMPOSITE_BOWMAN,
@@ -79,7 +80,9 @@ def modify_improved_bowman(data: DatFile, ror_strings_en: dict, ror_modded_strin
 
     logger.info("Making Improved Bow upgrade Bowman into Improved Bowman")
     improved_bow_effect = data.effects[EFFECT_IMPROVED_BOW]
-    improved_bow_effect.effect_commands = [EffectCommand(type=3, a=UNIT_BOWMAN, b=UNIT_IMPROVED_BOWMAN, c=-1, d=0.0)]
+    improved_bow_effect.effect_commands = [
+        EffectCommand(type=TYPE_UPGRADE_UNIT, a=UNIT_BOWMAN, b=UNIT_IMPROVED_BOWMAN, c=-1, d=0.0)
+    ]
 
     logger.info("Changing Improved Bow language help accordingly")
     logger.debug("[old]: %s" % ror_strings_en[f"{language_dll_help_id(LANGUAGE_DLL_NAME_TECH_IMPROVED_BOW)}"])
