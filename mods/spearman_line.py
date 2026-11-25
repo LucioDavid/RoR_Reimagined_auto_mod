@@ -158,7 +158,6 @@ def add_spearman(
         ror_data.graphics[graphic_id] = aoe2_data.graphics[graphic_id]
         copy_aoe2_sld_sprites_file(aoe2_data.graphics[graphic_id].file_name)
 
-    # TODO: parei aqui -- falta corrigir hotkey
     # TODO: parei aqui -- falta tech tree view
     # TODO: parei aqui -- falta corrigir áudios
 
