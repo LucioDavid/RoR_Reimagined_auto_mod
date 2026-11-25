@@ -6,12 +6,25 @@ def language_dll_help_id(language_dll_name_id: int):
     return language_dll_name_id + 21000
 
 
-def language_tech_tree_unit_id(language_dll_name_id: int):
+def language_name_string_id_unit(language_dll_name_id: int):
+    """
+    Used in a tech tree JSON file for units as "Name String ID".
+    """
     return language_dll_name_id + 9000
 
 
-def language_tech_tree_tech_id(language_dll_name_id: int):
+def language_name_string_id_tech(language_dll_name_id: int):
+    """
+    Used in a tech tree JSON file for techs as "Name String ID".
+    """
     return language_dll_name_id + 10000
+
+
+def language_help_string_id(language_dll_name_id: int):
+    """
+    Used in a tech tree JSON file for units and techs as "Help String ID".
+    """
+    return language_dll_name_id + 100000
 
 
 def id_for_string_index_list(language_dll_name_id: int):

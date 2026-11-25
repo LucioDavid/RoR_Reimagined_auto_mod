@@ -7,6 +7,7 @@ from genieutils.unit import TrainLocation
 
 from mods.helpers.ids_aoe2 import ACHAEMENIDS_CIV_ID, UNIT_SPEARMAN
 from mods.helpers.ids_ror import (
+    AGE_ID_TOOL,
     BUILDING_BARRACKS,
     HOTKEY_GROUP_BARRACKS,
     LANGUAGE_DLL_NAME_UNIT_ELITE_GUARDSMAN,
@@ -20,7 +21,8 @@ from mods.helpers.lang_helper import (
     id_for_string_index_list,
     language_dll_creation_id,
     language_dll_help_id,
-    language_tech_tree_unit_id,
+    language_help_string_id,
+    language_name_string_id_unit,
 )
 from mods.helpers.util import clone, copy_aoe2_sld_sprites_file
 
@@ -39,7 +41,7 @@ def add_spearman(
     new_techs: dict,
     aoe2_icons: dict,
     ror_icons: dict,
-) -> tuple[dict, dict]:
+):
     logger.info("Adding Spearman to all civs")
 
     spearman_dead_id = len(ror_data.civs[1].units)
@@ -68,7 +70,7 @@ def add_spearman(
     ror_modded_strings_en[f"{language_dll_help_id(LANGUAGE_DLL_NAME_UNIT_SPEARMAN)}"] = (
         rf"Train <b>{spearman.name}<b> (<cost>)\nAnti-cavalry infantry. Strong vs. Mounted Units, especially elephants. Weak vs. Ranged Soldiers and infantry.\n<GREY><i>Upgrades: attack, armor, pierce armor (Storage Pit); population space (Government Center); to Guardsman (Barracks).<i><DEFAULT>\n<hp> <attack> <armor> <piercearmor> <range>"
     )
-    ror_modded_strings_en[f"{language_tech_tree_unit_id(LANGUAGE_DLL_NAME_UNIT_SPEARMAN)}"] = spearman.name
+    ror_modded_strings_en[f"{language_name_string_id_unit(LANGUAGE_DLL_NAME_UNIT_SPEARMAN)}"] = spearman.name
     ror_modded_strings_en[f"{STRING_HOTKEY_SPEARMAN_TRAIN}"] = f"{spearman.name}-line"
 
     create_spearman_hotkey = {
@@ -158,13 +160,29 @@ def add_spearman(
         ror_data.graphics[graphic_id] = aoe2_data.graphics[graphic_id]
         copy_aoe2_sld_sprites_file(aoe2_data.graphics[graphic_id].file_name)
 
-    # TODO: parei aqui -- falta tech tree view
+    logger.debug("Adding Spearman to tech tree view of all civs")
+    for _, civ in civ_tech_trees.items():
+        civ["civ_techs_units"].append(
+            {
+                "Name": f"{spearman.name}",
+                "Node Type": "Unit",
+                "Link Node Type": "BuildingTech",
+                "Draw Node Type": "UnitTech",
+                "Use Type": "Unit",
+                "Node Status": "ResearchedCompleted",
+                "Name String ID": language_name_string_id_unit(LANGUAGE_DLL_NAME_UNIT_SPEARMAN),
+                "Age ID": AGE_ID_TOOL,
+                "Building ID": BUILDING_BARRACKS,
+                "Help String ID": language_help_string_id(LANGUAGE_DLL_NAME_UNIT_SPEARMAN),
+                "Node ID": spearman.id,
+                "Picture Index": spearman.icon_id,
+            }
+        )
+
     # TODO: parei aqui -- falta corrigir áudios
 
     new_units["Spearman"] = spearman_id
     new_techs["Spearman"] = spearman_tech_id
-
-    return new_units, new_techs
 
 
 def add_guardsman(
