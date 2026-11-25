@@ -71,18 +71,17 @@ def add_spearman(
     ror_modded_strings_en[f"{language_tech_tree_unit_id(LANGUAGE_DLL_NAME_UNIT_SPEARMAN)}"] = spearman.name
     ror_modded_strings_en[f"{STRING_HOTKEY_SPEARMAN_TRAIN}"] = f"{spearman.name}-line"
 
-    create_spearman_hotkey = (
-        {
-            "data_name": "BARRACKS_CREATE_SPEARMAN",
-            "name_string_id": STRING_HOTKEY_SPEARMAN_TRAIN,
-            "defaults_list": [{"name": "definitive", "key": "R"}, {"name": "left handed", "key": "O"}],
-            "string_index_list": [
-                id_for_string_index_list(LANGUAGE_DLL_NAME_UNIT_SPEARMAN),
-                id_for_string_index_list(LANGUAGE_DLL_NAME_UNIT_GUARDSMAN),
-                id_for_string_index_list(LANGUAGE_DLL_NAME_UNIT_ELITE_GUARDSMAN),
-            ],
-        },
-    )
+    create_spearman_hotkey = {
+        "data_name": "BARRACKS_CREATE_SPEARMAN",
+        "name_string_id": STRING_HOTKEY_SPEARMAN_TRAIN,
+        "defaults_list": [{"name": "definitive", "key": "R"}, {"name": "left handed", "key": "O"}],
+        "string_index_list": [
+            id_for_string_index_list(LANGUAGE_DLL_NAME_UNIT_SPEARMAN),
+            id_for_string_index_list(LANGUAGE_DLL_NAME_UNIT_GUARDSMAN),
+            id_for_string_index_list(LANGUAGE_DLL_NAME_UNIT_ELITE_GUARDSMAN),
+        ],
+    }
+
     hotkeys["hotkey_group_list"][HOTKEY_GROUP_BARRACKS]["hotkey_list"].append(create_spearman_hotkey)
 
     spearman.creatable.train_locations = [
