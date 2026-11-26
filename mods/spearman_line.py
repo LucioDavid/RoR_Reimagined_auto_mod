@@ -8,6 +8,8 @@ from genieutils.unit import TrainLocation
 from mods.helpers.ids_aoe2 import ACHAEMENIDS_CIV_ID, UNIT_SPEARMAN
 from mods.helpers.ids_ror import (
     AGE_ID_TOOL,
+    BIRD_WWISE_ATTACK_SOUND_ID_ROR,
+    BIRD_WWISE_MOVE_SOUND_ID_ROR,
     BUILDING_BARRACKS,
     HOTKEY_GROUP_BARRACKS,
     LANGUAGE_DLL_NAME_UNIT_ELITE_GUARDSMAN,
@@ -16,6 +18,9 @@ from mods.helpers.ids_ror import (
     STRING_HOTKEY_SPEARMAN_TRAIN,
     TECH_TOOL_AGE,
     TYPE_ENABLE_UNIT,
+    WWISE_SELECTION_SOUND_ID_ROR,
+    WWISE_SOUND_ID_DEATH_ROR,
+    WWISE_TRAIN_SOUND_ID_ROR,
 )
 from mods.helpers.lang_helper import (
     id_for_string_index_list,
@@ -64,6 +69,10 @@ def add_spearman(
     spearman.language_dll_name = LANGUAGE_DLL_NAME_UNIT_SPEARMAN
     spearman.language_dll_creation = language_dll_creation_id(LANGUAGE_DLL_NAME_UNIT_SPEARMAN)
     spearman.dead_unit_id = spearman_dead_id
+    spearman.wwise_train_sound_id = WWISE_TRAIN_SOUND_ID_ROR
+    spearman.wwise_selection_sound_id = WWISE_SELECTION_SOUND_ID_ROR
+    spearman.bird.wwise_attack_sound_id = BIRD_WWISE_ATTACK_SOUND_ID_ROR
+    spearman.bird.wwise_move_sound_id = BIRD_WWISE_MOVE_SOUND_ID_ROR
 
     ror_modded_strings_en[f"{LANGUAGE_DLL_NAME_UNIT_SPEARMAN}"] = spearman.name
     ror_modded_strings_en[f"{language_dll_creation_id(LANGUAGE_DLL_NAME_UNIT_SPEARMAN)}"] = f"Train {spearman.name}"
@@ -160,6 +169,9 @@ def add_spearman(
         ror_data.graphics[graphic_id] = aoe2_data.graphics[graphic_id]
         copy_aoe2_sld_sprites_file(aoe2_data.graphics[graphic_id].file_name)
 
+    logger.debug("Setting Spearman death sound as the default from RoR")
+    ror_data.graphics[dying_graphic_id].wwise_sound_id = WWISE_SOUND_ID_DEATH_ROR
+
     logger.debug("Adding Spearman to tech tree view of all civs")
     for _, civ in civ_tech_trees.items():
         civ["civ_techs_units"].append(
@@ -178,8 +190,6 @@ def add_spearman(
                 "Picture Index": spearman.icon_id,
             }
         )
-
-    # TODO: parei aqui -- falta corrigir áudios
 
     new_units["Spearman"] = spearman_id
     new_techs["Spearman"] = spearman_tech_id
