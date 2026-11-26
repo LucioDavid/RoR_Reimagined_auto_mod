@@ -47,7 +47,7 @@ def add_spearman(
     aoe2_icons: dict,
     ror_icons: dict,
 ):
-    logger.info("Adding Spearman to all civs")
+    logger.debug("Adding Spearman to all civs")
 
     spearman_dead_id = len(ror_data.civs[1].units)
     spearman_dead = clone(
@@ -144,10 +144,10 @@ def add_spearman(
         ],
     )
     spearman_tech_id = len(ror_data.techs)
-    logger.info(f"Adding Spearman Tech with id {spearman_tech_id}")
+    logger.debug(f"Adding Spearman Tech with id {spearman_tech_id}")
     ror_data.techs.append(tech)
 
-    logger.info("Copying Spearman graphics from AoE2")
+    logger.debug("Copying Spearman graphics from AoE2")
     standing_graphics_a_id = aoe2_data.civs[ACHAEMENIDS_CIV_ID].units[UNIT_SPEARMAN].standing_graphic[0]
     dying_graphic_id = aoe2_data.civs[ACHAEMENIDS_CIV_ID].units[UNIT_SPEARMAN].dying_graphic
     walking_graphic_id = aoe2_data.civs[ACHAEMENIDS_CIV_ID].units[UNIT_SPEARMAN].dead_fish.walking_graphic
@@ -204,7 +204,7 @@ def add_guardsman(
     aoe2_strings_en: dict,
     ror_modded_strings_en: dict,
 ):
-    logger.info("Adding Guardsman to all civs")
+    logger.debug("Adding Guardsman to all civs")
     pass
 
 
@@ -217,7 +217,7 @@ def add_elite_guardsman(
     aoe2_strings_en: dict,
     ror_modded_strings_en: dict,
 ):
-    logger.info("Adding Elite Guardsman to all civs")
+    logger.debug("Adding Elite Guardsman to all civs")
     pass
 
 

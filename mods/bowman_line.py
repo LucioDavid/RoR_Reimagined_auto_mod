@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 
 def modify_bowman(data: DatFile, ror_strings_en: dict, ror_modded_strings_en: dict, food: int, gold: int):
-    logger.info("Changing Bowman cost of all civs")
+    logger.debug("Changing Bowman cost of all civs")
     for civ in data.civs:
         bowman = civ.units[UNIT_BOWMAN]
         bowman.creatable.resource_costs = (
@@ -39,7 +39,7 @@ def modify_bowman(data: DatFile, ror_strings_en: dict, ror_modded_strings_en: di
             bowman.creatable.resource_costs[2],
         )
 
-    logger.info("Changing Bowman language help to mention upgrade to Improved Bowman")
+    logger.debug("Changing Bowman language help to mention upgrade to Improved Bowman")
     logger.debug("[old]: %s" % ror_strings_en[f"{language_dll_help_id(LANGUAGE_DLL_NAME_UNIT_BOWMAN)}"])
     ror_modded_strings_en[f"{language_dll_help_id(LANGUAGE_DLL_NAME_UNIT_BOWMAN)}"] = (
         r"Train <b>Bowman<b> (<cost>)\nRanged unit. Strong vs. units at long range. Weak vs. Slingers and units at close range.\n<GREY><i>Upgrades: armor (Storage Pit); range (Market), attack, accuracy (Government Center); to Improved Bowman (Range).<i><DEFAULT>\n<hp> <attack> <armor> <piercearmor> <range>"
@@ -48,7 +48,7 @@ def modify_bowman(data: DatFile, ror_strings_en: dict, ror_modded_strings_en: di
 
 
 def modify_improved_bowman(data: DatFile, ror_strings_en: dict, ror_modded_strings_en: dict):
-    logger.info("Changing Improved Bowman train button, hotkey and stats of all civs")
+    logger.debug("Changing Improved Bowman train button, hotkey and stats of all civs")
     for civ in data.civs:
         improved_bowman = civ.units[UNIT_IMPROVED_BOWMAN]
         improved_bowman.creatable.train_locations = [
@@ -67,7 +67,7 @@ def modify_improved_bowman(data: DatFile, ror_strings_en: dict, ror_modded_strin
         logger.debug(f"[new][{civ.name}] - attacks[0]: {improved_bowman.type_50.attacks[0]}")
         logger.debug(f"[new][{civ.name}] - displayed_attack: {improved_bowman.type_50.displayed_attack}")
 
-    logger.info("Changing Improved Bow tech button")
+    logger.debug("Changing Improved Bow tech button")
     improved_bow = data.techs[TECH_IMPROVED_BOW]
     improved_bow.research_locations = [
         ResearchLocation(
@@ -78,13 +78,13 @@ def modify_improved_bowman(data: DatFile, ror_strings_en: dict, ror_modded_strin
         )
     ]
 
-    logger.info("Making Improved Bow upgrade Bowman into Improved Bowman")
+    logger.debug("Making Improved Bow upgrade Bowman into Improved Bowman")
     improved_bow_effect = data.effects[EFFECT_IMPROVED_BOW]
     improved_bow_effect.effect_commands = [
         EffectCommand(type=TYPE_UPGRADE_UNIT, a=UNIT_BOWMAN, b=UNIT_IMPROVED_BOWMAN, c=-1, d=0.0)
     ]
 
-    logger.info("Changing Improved Bow language help accordingly")
+    logger.debug("Changing Improved Bow language help accordingly")
     logger.debug("[old]: %s" % ror_strings_en[f"{language_dll_help_id(LANGUAGE_DLL_NAME_TECH_IMPROVED_BOW)}"])
     ror_modded_strings_en[f"{language_dll_help_id(LANGUAGE_DLL_NAME_TECH_IMPROVED_BOW)}"] = (
         r"Upgrade to <b>Improved Bow<b> (<cost>)\nUpgrades your Bowmen and lets you train Improved Bowmen, which are stronger."
@@ -93,7 +93,7 @@ def modify_improved_bowman(data: DatFile, ror_strings_en: dict, ror_modded_strin
 
 
 def modify_composite_bowman(data: DatFile):
-    logger.info("Changing Composite Bowman train button, hotkey and stats of all civs")
+    logger.debug("Changing Composite Bowman train button, hotkey and stats of all civs")
     for civ in data.civs:
         composite_bowman = civ.units[UNIT_COMPOSITE_BOWMAN]
         composite_bowman.creatable.train_locations = [
@@ -112,7 +112,7 @@ def modify_composite_bowman(data: DatFile):
         logger.debug(f"[new][{civ.name}] - attacks[0]: {composite_bowman.type_50.attacks[0]}")
         logger.debug(f"[new][{civ.name}] - displayed_attack: {composite_bowman.type_50.displayed_attack}")
 
-    logger.info("Changing Composite Bow tech button")
+    logger.debug("Changing Composite Bow tech button")
     composite_bow = data.techs[TECH_COMPOSITE_BOW]
     composite_bow.research_locations = [
         ResearchLocation(
@@ -123,10 +123,10 @@ def modify_composite_bowman(data: DatFile):
         )
     ]
 
-    logger.info("Moving Composite Bow tech to Iron Age")
+    logger.debug("Moving Composite Bow tech to Iron Age")
     composite_bow.required_techs = (TECH_IMPROVED_BOW, TECH_IRON_AGE, -1, -1, -1, -1)
 
-    logger.info("Making Composite Bow upgrade Bowman into Composite Bowman")
+    logger.debug("Making Composite Bow upgrade Bowman into Composite Bowman")
     composite_bow_effect = data.effects[EFFECT_COMPOSITE_BOW]
     composite_bow_effect.effect_commands.append(
         EffectCommand(type=3, a=UNIT_BOWMAN, b=UNIT_COMPOSITE_BOWMAN, c=-1, d=0.0)
@@ -134,7 +134,7 @@ def modify_composite_bowman(data: DatFile):
 
 
 def modify_bowman_line_upgrades_default_hotkey(hotkeys: dict):
-    logger.info("Changing Composite Bow and Improved Bow techs default hotkey")
+    logger.debug("Changing Composite Bow and Improved Bow techs default hotkey")
     hotkey = next(
         (
             item
@@ -150,7 +150,7 @@ def modify_bowman_line_upgrades_default_hotkey(hotkeys: dict):
 
 
 def modify_bowman_line_tech_tree_view(civ_tech_trees: dict):
-    logger.info("Changing Bowman-line tech tree view of all civs")
+    logger.debug("Changing Bowman-line tech tree view of all civs")
 
     for _, civ in civ_tech_trees.items():
         imp_bowman = next(
@@ -173,7 +173,7 @@ def modify_bowman_line_tech_tree_view(civ_tech_trees: dict):
 
 
 def modify_futuravailable_bowman_line_upgrades(futuravailableunits: dict):
-    logger.info("Changing Bowman-line futuravailableunits of all civs")
+    logger.debug("Changing Bowman-line futuravailableunits of all civs")
     for _, civ in futuravailableunits.items():
         archery_range = next(
             (item for item in civ["Buildings"] if item["ID"] == BUILDING_ARCHERY_RANGE),

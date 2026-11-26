@@ -29,12 +29,12 @@ logger = logging.getLogger(__name__)
 
 
 def load_dat_file(file_str_path: str) -> DatFile:
-    logger.info(f"Loading dat file {file_str_path}")
+    logger.debug(f"Loading dat file {file_str_path}")
     return DatFile.parse(file_str_path)
 
 
 def load_json_file(file_str_path: str) -> dict:
-    logger.info(f"Loading JSON file {file_str_path}")
+    logger.debug(f"Loading JSON file {file_str_path}")
     with open(file_str_path) as json_data:
         return json.load(json_data)
 
@@ -65,7 +65,7 @@ def load_en_key_value_strings(file_str_path: str) -> dict:
 
 
 def save_json_file(file_path: Path, data: dict, indent_size: int | None):
-    logger.info(f"Saving JSON file {file_path}")
+    logger.debug(f"Saving JSON file {file_path}")
     file_path.parent.mkdir(parents=True, exist_ok=True)
     with open(file_path, "w") as f:
         json.dump(data, f, indent=indent_size)
@@ -77,7 +77,7 @@ def save_json_files(file_paths: dict[str, Path], base_path: Path, data: dict, in
 
 
 def save_language_file(file_path: Path, data: dict):
-    logger.info(f"Saving language file {file_path}")
+    logger.debug(f"Saving language file {file_path}")
     file_path.parent.mkdir(parents=True, exist_ok=True)
     with open(file_path, "w") as f:
         for key, value in data.items():
@@ -85,7 +85,7 @@ def save_language_file(file_path: Path, data: dict):
 
 
 def ensure_dist_drs_graphics_folder():
-    logger.info(rf"Ensure language en folder {ROR_UNIT_GRAPHICS_FOLDER_PATH}")
+    logger.debug(rf"Ensure language en folder {ROR_UNIT_GRAPHICS_FOLDER_PATH}")
     Path(rf"dist\{ROR_UNIT_GRAPHICS_FOLDER_PATH}").mkdir(parents=True, exist_ok=True)
 
 
@@ -110,6 +110,7 @@ def main():
     log_filename = args.logfile
     logging.basicConfig(filename=log_filename, level=log_level[args.loglevel])
 
+    logger.info("Loading files and creating directories")
     aoe2_data = load_dat_file(rf'{getenv("BASE_AOE2_DIR")}\{AOE2_DAT_FILE_PATH}')
     ror_data = load_dat_file(rf'{getenv("BASE_AOE2_DIR")}\{ROR_DAT_FILE_PATH}')
 
@@ -148,8 +149,9 @@ def main():
 
     # TODO: tech tree preview
 
+    logger.info("Saving files")
     output_dat_file_path = rf"dist\{ROR_DAT_FILE_PATH}"
-    logger.info(f"Saving dat file {output_dat_file_path}")
+    logger.debug(f"Saving dat file {output_dat_file_path}")
     ror_data.save(output_dat_file_path)
 
     save_json_file(Path(rf"dist\{HOTKEYS_FILE_PATH}"), data=ror_hotkeys, indent_size=3)
