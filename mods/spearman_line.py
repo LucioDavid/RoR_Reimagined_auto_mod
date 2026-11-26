@@ -191,6 +191,19 @@ def add_spearman(
             }
         )
 
+    logger.debug("Adding Spearman futuravailableunits of all civs")
+    for _, civ in futuravailableunits.items():
+        barracks = next(
+            (item for item in civ["Buildings"] if item["ID"] == BUILDING_BARRACKS),
+            None,
+        )
+        if barracks is None:
+            continue
+
+        units = barracks.get("Units")
+        if units is not None:
+            units.append({"ID": spearman.id, "Name": spearman.name, "RequiredAge": AGE_ID_TOOL})
+
     new_units["Spearman"] = spearman_id
     new_techs["Spearman"] = spearman_tech_id
 
