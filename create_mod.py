@@ -147,7 +147,7 @@ def main():
         ror_icons,
     )
 
-    # TODO: tech tree preview
+    # TODO: tech tree preview (do only after having all units)
 
     logger.info("Saving files")
     output_dat_file_path = rf"dist\{ROR_DAT_FILE_PATH}"

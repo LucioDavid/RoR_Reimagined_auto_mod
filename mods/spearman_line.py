@@ -204,6 +204,8 @@ def add_spearman(
         if units is not None:
             units.append({"ID": spearman.id, "Name": spearman.name, "RequiredAge": AGE_ID_TOOL})
 
+    # TODO: refactor as a generalist function to reuse in other units copied from Chronicles.
+
     new_units["Spearman"] = spearman_id
     new_techs["Spearman"] = spearman_tech_id
 
